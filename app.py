@@ -27,13 +27,7 @@ if not theme:
         padding-top: 20px;
     }
 
-    .card {
-        background: linear-gradient(180deg, #ffffff, #f8fbff);
-        padding: 30px;
-        border-radius: 22px;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-        border: 1px solid #dbeafe;
-    }
+    
 
     .title {
         font-size: 30px;
