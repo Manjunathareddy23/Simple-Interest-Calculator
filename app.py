@@ -151,12 +151,11 @@ st.markdown(css, unsafe_allow_html=True)
 
 # ---------------- HEADER ----------------
 st.markdown("""
-<div class="title">💰 Simple Interest Calculator</div>
-<div class="subtitle">Monthly Flat Interest • Dark / Light Mode</div>
+<div class="title">💰 Manju Reddy❤️ Simple Interest Calculator</div>
+<div class="subtitle">Monthly Interest</div>
 """, unsafe_allow_html=True)
 
-# ---------------- CARD START ----------------
-st.markdown("<div class='card'>", unsafe_allow_html=True)
+
 
 # ---------------- INPUTS ----------------
 principal = st.number_input("Principal Amount (₹)", min_value=0.0, step=1000.0)
