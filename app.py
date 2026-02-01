@@ -1,84 +1,99 @@
 import streamlit as st
-from datetime import date
-from dateutil.relativedelta import relativedelta
+from datetime import date, timedelta
 
-# ----------------- PAGE CONFIG -----------------
+# ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="Simple Interest Calculator", layout="centered")
 
-# ----------------- TAILWIND CSS -----------------
+# ---------------- TAILWIND CSS ----------------
 st.markdown("""
 <style>
 @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
 
-.input-box {
-    @apply border border-gray-300 rounded-lg p-2 w-full;
-}
-
-.btn {
-    @apply bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700;
-}
-
 .card {
-    @apply bg-white p-6 rounded-xl shadow-md;
+    background-color: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2563eb;
+    text-align: center;
+}
+.subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+.result {
+    background-color: #ecfeff;
+    padding: 16px;
+    border-radius: 12px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ----------------- HEADER -----------------
+# ---------------- HEADER ----------------
 st.markdown("""
-<div class="text-center mb-6">
-    <h1 class="text-3xl font-bold text-blue-700">💰 Simple Interest Calculator</h1>
-    <p class="text-gray-500">Streamlit + Tailwind CSS</p>
-</div>
+<div class="title">💰 Simple Interest Calculator</div>
+<div class="subtitle">Streamlit + Tailwind CSS (Accurate)</div>
 """, unsafe_allow_html=True)
 
-# ----------------- CARD START -----------------
-st.markdown('<div class="card">', unsafe_allow_html=True)
+# ---------------- CARD START ----------------
+st.markdown("<div class='card'>", unsafe_allow_html=True)
 
-# ----------------- INPUTS -----------------
+# ---------------- INPUTS ----------------
 principal = st.number_input("Principal Amount (₹)", min_value=0.0, step=1000.0)
-rate = st.number_input("Rate of Interest (%)", min_value=0.0, step=0.5)
+rate = st.number_input("Rate of Interest (% per annum)", min_value=0.0, step=0.1)
 
 col1, col2 = st.columns(2)
 with col1:
-    start_date = st.date_input("Start Date", date.today())
+    start_date = st.date_input("Start Date")
 with col2:
-    end_date = st.date_input("End Date", date.today())
+    end_date = st.date_input("End Date")
 
-# ----------------- DATE LOGIC -----------------
-months = 0
-month_list = []
+# ---------------- DATE CALCULATIONS ----------------
+total_days = 0
+months_list = []
 
-if end_date >= start_date:
-    diff = relativedelta(end_date, start_date)
-    months = diff.years * 12 + diff.months
-    temp_date = start_date
+if end_date > start_date:
+    total_days = (end_date - start_date).days
 
-    for _ in range(months):
-        month_list.append(temp_date.strftime("%B %Y"))
-        temp_date += relativedelta(months=1)
+    temp_date = start_date.replace(day=1)
+    while temp_date <= end_date:
+        months_list.append(temp_date.strftime("%B %Y"))
+        temp_date += timedelta(days=32)
+        temp_date = temp_date.replace(day=1)
 
-# ----------------- DISPLAY MONTHS -----------------
+# ---------------- DISPLAY DURATION ----------------
 st.markdown("### 📆 Duration Details")
 
-st.info(f"**Number of Months:** {months}")
+if end_date <= start_date:
+    st.warning("End date must be after start date")
+else:
+    approx_months = total_days / 30.44
+    approx_years = total_days / 365.25
 
-if months > 0:
+    st.info(f"**Total Days:** {total_days}")
+    st.info(f"**Total Months (approx):** {approx_months:.2f}")
+
     st.write("**Months Covered:**")
-    st.write(", ".join(month_list))
+    st.write(", ".join(months_list))
 
-# ----------------- CALCULATE BUTTON -----------------
+# ---------------- CALCULATE BUTTON ----------------
 if st.button("Calculate Interest 💡"):
-    if months <= 0:
-        st.error("End date must be greater than start date")
+    if end_date <= start_date:
+        st.error("Invalid date range")
     else:
-        time_years = months / 12
-        simple_interest = (principal * rate * time_years) / 100
+        simple_interest = (principal * rate * approx_years) / 100
         total_amount = principal + simple_interest
 
-        st.success("### ✅ Calculation Result")
+        st.markdown("<div class='result'>", unsafe_allow_html=True)
+        st.success("### ✅ Correct Calculation Result")
         st.write(f"**Simple Interest:** ₹ {simple_interest:,.2f}")
         st.write(f"**Total Amount:** ₹ {total_amount:,.2f}")
+        st.markdown("</div>", unsafe_allow_html=True)
 
-# ----------------- CARD END -----------------
-st.markdown('</div>', unsafe_allow_html=True)
+# ---------------- CARD END ----------------
+st.markdown("</div>", unsafe_allow_html=True)
