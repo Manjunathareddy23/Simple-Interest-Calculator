@@ -227,3 +227,4 @@ if st.button("Calculate Interest 💡"):
 
 # ---------------- CARD END ----------------
 st.markdown("</div>", unsafe_allow_html=True)
+st.write("Made by Manjunathareddy❤️-2026")
